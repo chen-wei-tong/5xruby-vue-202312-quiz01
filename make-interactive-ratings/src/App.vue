@@ -12,35 +12,37 @@ const movies = ref(items);
 // const genres = reactive({});
 // const rating = ref(0);
 
-const rating = computed(() => ratingHover.value = stars.rating);
+const rating = computed(() => (ratingHover.value = stars.rating));
 
-const ratingHover = ref(null);
+const ratingHover = ref();
 
-const ratingToggle = (value) => {
+const ratingToggle = (value, id) => {
   stars.rating = value;
   console.log(`評等：${stars.rating}`);
 };
 const stars = reactive({
   rating: "",
 });
-const setHoverRating = (value) => {
-  ratingHover.value = value;
+//預設rating4,4,3
+const setHoverRating = (value, id) => {
+  items.forEach((item, index) => {
+    ratingHover.value = value;
+    // value = items.item.rating
+    console.log("ratingHover", value);
+  });
 };
 const resetHoverRating = () => {
   ratingHover.value = null;
 };
+
 onMounted(() => {
   if (items && items.length > 0) {
-    for (let i = 0; i < items.length; i++) {
-      console.log(`Movie ${i + 1} Rating: ${items[i].rating}`);
-      console.log("41", items[i].rating);
-    }
-    items.forEach((movie, index) => {
-      for (let i = 0; i < items.length; i++) {
-        if (items && items.length > 0) {
-          console.log("items48", items[i].rating);
-        }
-      }
+    // for (let i = 0; i < items.length; i++) {
+    //   console.log(`Movie ${i + 1} Rating: ${items[i].rating}`);
+    //   console.log("i", items[i].rating);
+    // }
+    items.forEach((item, index) => {
+      console.log("預設?顆星", item.rating, index);
     });
   }
 });
@@ -74,23 +76,24 @@ onMounted(() => {
             </p>
           </div>
           <div class="movie-item-rating-wrapper">
+            {{ movie.rating }}
             <span class="movie-item-rating-text">
               Rating: ({{ stars.rating }}/5)
             </span>
 
             <div class="movie-item-star-icon-wrapper">
               <button
-                v-for="i in 5"
-                :key="i"
+                v-for="(i, index) in 5"
+                :key="i.id"
                 class="movie-item-star-icon-button"
                 :class="[
                   i <= (ratingHover || stars.rating)
                     ? 'text-yellow-500'
                     : 'text-gray-500',
                 ]"
-                @mouseover="setHoverRating(i)"
+                @mouseover="setHoverRating(i, movie.id)"
                 @mouseout="resetHoverRating"
-                @click="ratingToggle(i)"
+                @click="ratingToggle(i, movie.id)"
               >
                 <StarIcon class="movie-item-star-icon" />
               </button>
